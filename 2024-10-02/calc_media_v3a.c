@@ -12,18 +12,30 @@
 #define HIGHER_GRADE    20
 #define LOWER_GRADE      0
 
+ void skip_til_end_of_ln()
+ {
+    while ( getchar() != '\n' ) {
+        ;
+    }
+ }
+
+
 int read_int_in_range (int lower, int higher)
 {
     int value;
+    int retscanf;
     do {
         printf("Indique um valor no intervalo [%d..%d] ", lower, higher);
-        scanf("%d", &value);
-
-        if (value < lower || value > higher) {
-            printf("valor errado\n"); 
+        retscanf = scanf("%d", &value);
+        if (retscanf == 0) {
+            skip_til_end_of_ln();
+            printf("Deve inserir un numero\n");
+        }
+        else if (value < lower || value > higher) {
+            printf("valor errado fora do intervalo\n"); 
         }
 
-    } while (value < lower || value > higher);
+    } while (retscanf == 0 || value < lower || value > higher);
 
     return value;
 }
