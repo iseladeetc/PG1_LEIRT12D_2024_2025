@@ -13,6 +13,11 @@ bool e_minuscula (char ch)
 {
     return  ch >= 'a' && ch <= 'z';
 }
+bool e_maiuscula (char ch) 
+{
+    // TODO
+    return false;
+}
 
 char maiuscula (char ch) 
 {
@@ -23,7 +28,7 @@ char maiuscula (char ch)
 
 bool e_letra (char ch) 
 {
-    if (ch >= '0' || ch <= '9') {
+    if (e_maiuscula(ch) || e_minuscula(ch)) {
         return true;
     }
     return false;
