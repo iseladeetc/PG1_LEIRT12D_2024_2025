@@ -29,15 +29,45 @@ track_t db_tracks[MAX_TRACKS];
 
 
  
-/**
- * NÍVEL 1
- * 
- * Apresenta na consola o conteúdo dos arrays constituintes da base de dados:
- * db_genres, db_artists, db_albums e db_tracks
- * Ésta função é essencialmente útil para debug.
- */
-void db_dump() {
-    printf("'db_dump' not implemented!\n");
+
+
+artist_t artist_create(artist_id_t artist_id, const char artist_name[MAX_ARTIST_NAME], int popularity, genre_id_t genre_id)
+{
+    artist_t art;
+
+    art.id = artist_id;
+    art.in_use = true;
+    strcpy(art.name, artist_name);
+    art.n_albums = 0;
+    art.popularity = popularity;
+    art.genre_id = genre_id;
+
+    return art;
+}
+
+void db_artist_print (artist_id_t artist_id)
+{
+        
+}
+
+bool db_artist_vaild_id (artist_id_t id)
+{
+    if (id < 0 || id > MAX_ARTISTS) return false;
+
+    return db_artists[id].in_use;
+}
+
+artist_id_t db_artist_get_free_id()
+{
+    if (db_nartists == MAX_ARTISTS) return INVALID_ID;
+
+    for (int i = 0; i < MAX_ARTISTS; i++) {
+        if ( ! db_artist_vaild_id(i) ) {
+            db_artists[i].in_use = true;
+            return i;
+        }
+    }
+    return INVALID_ID;
 }
 
 /**
@@ -47,9 +77,19 @@ void db_dump() {
  * retorna a posição (id) do artista de nome "artist_name" no array de artistas
  * ou -1 caso o artista de nome "artist_name" não exista
  */
-artist_id_t db_artist_getid(const char artist_name[]) {
-    printf("'db_artist_getid' not implemented!\n");
-    return -1;
+artist_id_t db_artist_getid(const char artist_name[]) 
+{
+    int cnt_found_elements = 0;
+
+    for (int i = 0; i < MAX_ARTISTS && cnt_found_elements < db_nartists; i++) {
+        if ( db_artist_vaild_id(i) ) {
+            cnt_found_elements++;
+            if ( strcmp(db_artists[i].name, artist_name) == 0) {
+                return i;
+            }
+        }
+    }
+    return INVALID_ID;
 }
 
 /**
@@ -75,9 +115,22 @@ artist_id_t db_artist_getid(const char artist_name[]) {
  * Caso o artista já exista, o array não é alterado, sendo retornado o id
  * do artista existente
  */
-artist_id_t db_artist_add(const char artist_name[], int popularity, const char genre[]) {
-    printf("'db_artist_add' not implemented!\n");
-    return -1;
+artist_id_t db_artist_add(const char artist_name[], int popularity, const char genre[]) 
+{
+    artist_id_t id =  db_artist_getid(artist_name);
+    if (db_artist_vaild_id(id)) return id;
+
+    // o artista não existe inserir
+
+    // ver se encontro id livre
+    id = db_artist_get_free_id();
+    if (! db_artist_vaild_id(id)) return INVALID_ID;
+
+    // TODO: FALTA TRATAR o GENRE
+
+    db_artists[id] = artist_create(id, artist_name, popularity, -1);
+
+    return id;
 }
 
 
@@ -249,7 +302,14 @@ genre_t db_genre_get_by_id(genre_id_t genre_id) {
 }
 
 
-
-
-
+/**
+ * NÍVEL 1
+ * 
+ * Apresenta na consola o conteúdo dos arrays constituintes da base de dados:
+ * db_genres, db_artists, db_albums e db_tracks
+ * Ésta função é essencialmente útil para debug.
+ */
+void db_dump() {
+    printf("'db_dump' not implemented!\n");
+}
 
