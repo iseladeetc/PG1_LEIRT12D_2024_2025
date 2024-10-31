@@ -6,6 +6,8 @@ int main()
     // // teste 1
     artist_id_t aid = db_artist_add("Queen", 86, "Classic Rock");
     db_artist_print(aid);
+    aid = db_artist_add("Queen2", 86, "Classic Rock");
+    db_artist_print(aid);
 
     // // teste 2
     // date_t release_date = date_from_str("5-2-1991");

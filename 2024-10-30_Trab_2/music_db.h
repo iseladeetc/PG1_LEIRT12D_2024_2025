@@ -76,16 +76,8 @@ typedef struct {
  * FUNÇÕES
  */
  
- 
- 
-/**
- * NÍVEL 1
- * 
- * Apresenta na consola o conteúdo dos arrays constituintes da base de dados:
- * db_genres, db_artists, db_albums e db_tracks
- * Ésta função é essencialmente útil para debug.
- */
-void db_dump();
+ void db_artist_print (artist_id_t artist_id);
+
 
 
 
@@ -253,3 +245,12 @@ int db_top_popularity(artist_t top[], int capacity);
 db_stats_t db_stats();
 
 
+ 
+/**
+ * NÍVEL 1
+ * 
+ * Apresenta na consola o conteúdo dos arrays constituintes da base de dados:
+ * db_genres, db_artists, db_albums e db_tracks
+ * Ésta função é essencialmente útil para debug.
+ */
+void db_dump();

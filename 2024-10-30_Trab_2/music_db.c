@@ -45,12 +45,22 @@ artist_t artist_create(artist_id_t artist_id, const char artist_name[MAX_ARTIST_
     return art;
 }
 
-void db_artist_print (artist_id_t artist_id)
+void artist_print(artist_t artist)
 {
-        
+    printf("\t Id: %d | name: %s | n_albuns: %d | popularity: %d | genre: %d\n",
+            artist.id, artist.name, artist.n_albums, artist.popularity, artist.genre_id);
 }
 
-bool db_artist_vaild_id (artist_id_t id)
+void db_artist_print (artist_id_t artist_id)
+{
+    artist_t artist = db_artist_get_by_id(artist_id);
+    if (artist.id == INVALID_ID) {
+        printf("\t  | | | | |\n");
+    }
+    artist_print(artist);
+}
+
+bool db_artist_valid_id (artist_id_t id)
 {
     if (id < 0 || id > MAX_ARTISTS) return false;
 
@@ -62,7 +72,7 @@ artist_id_t db_artist_get_free_id()
     if (db_nartists == MAX_ARTISTS) return INVALID_ID;
 
     for (int i = 0; i < MAX_ARTISTS; i++) {
-        if ( ! db_artist_vaild_id(i) ) {
+        if ( ! db_artist_valid_id(i) ) {
             db_artists[i].in_use = true;
             return i;
         }
@@ -82,7 +92,7 @@ artist_id_t db_artist_getid(const char artist_name[])
     int cnt_found_elements = 0;
 
     for (int i = 0; i < MAX_ARTISTS && cnt_found_elements < db_nartists; i++) {
-        if ( db_artist_vaild_id(i) ) {
+        if ( db_artist_valid_id(i) ) {
             cnt_found_elements++;
             if ( strcmp(db_artists[i].name, artist_name) == 0) {
                 return i;
@@ -98,9 +108,11 @@ artist_id_t db_artist_getid(const char artist_name[])
  * retorna o artista  (artist_t) de id "artist_id"
  * ou um artista inválido, com id = -1 ("null_artist"), caso o "artist_id" seja inválido
  */  
- artist_t db_artist_get_by_id(artist_id_t artist_id) {
-    printf("'db_artist_get_by_id' not implemented!\n");
-    return null_artist; 
+ artist_t db_artist_get_by_id(artist_id_t artist_id) 
+ {
+    if (! db_artist_valid_id(artist_id)) return null_artist; 
+
+    return db_artists[artist_id];
 }
 
 
@@ -118,13 +130,13 @@ artist_id_t db_artist_getid(const char artist_name[])
 artist_id_t db_artist_add(const char artist_name[], int popularity, const char genre[]) 
 {
     artist_id_t id =  db_artist_getid(artist_name);
-    if (db_artist_vaild_id(id)) return id;
+    if (db_artist_valid_id(id)) return id;
 
     // o artista não existe inserir
 
     // ver se encontro id livre
     id = db_artist_get_free_id();
-    if (! db_artist_vaild_id(id)) return INVALID_ID;
+    if (! db_artist_valid_id(id)) return INVALID_ID;
 
     // TODO: FALTA TRATAR o GENRE
 
