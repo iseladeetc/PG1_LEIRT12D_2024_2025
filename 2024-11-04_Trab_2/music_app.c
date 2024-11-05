@@ -87,8 +87,8 @@ void fill_status(int status_code, char status_msg[], int line) {
  * Função responsável pelo processamento com comando add
  *
  * add ; artist; <artist_name> ; <popularity>   ; <genre_name>
- * add ; album;  <album_name>  ; <release_date> 
- * add ; track;  <track_name>  ; <artist_name>  ; <duration> 
+ * add ; album;  <artist_name> ; <album_name>   ; <release_date> 
+ * add ; track;  <album_name>  ; <artist_name>  ; <track_name>   ; <duration> 
  */
 int process_cmd_add(spart_t cmd_parts[], int n_parts)
 {
