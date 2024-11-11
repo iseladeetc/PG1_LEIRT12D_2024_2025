@@ -146,6 +146,42 @@ artist_id_t db_artist_add(const char artist_name[], int popularity, const char g
 }
 
 
+bool db_save_track(track_id_t track_id, FILE *fp)
+{
+    track_t track = db_track_get_by_id(track_id);
+    album_t album = db_album_get_by_id(track.album_id);
+    artist_t artist = db_artist_get_by_id(album.artist_id); 
+
+}
+
+bool db_save_album(album_id_t album_id, FILE *fp)
+{
+    album_t album = db_album_get_by_id(album_id);
+    artist_t artist = db_artist_get_by_id(album.artist_id);
+
+    fprintf("add ; album; %s; %s; %d-%d-%d\n",
+            artist.name, album.name, album.release_date.day, 
+            album.release_date.month, album.release_date.year);
+
+    for (int i = 0; i < album.n_tracks; i++) {
+        db_save_track(album.tracks[i], fp);
+    }
+    return true;
+}
+
+bool db_save_artist(artist_id_t id, FILE *fp)
+{
+    artist_t artist = db_artist_get_by_id(id);
+    // save os dados artist: add ; artist; <artist_name> ; <popularity> ; <genre_name>
+    fprintf(fp, "add ; artist ; %s ; %d; %s\n",
+            artist.name, artist.popularity, db_genre_get_by_id(artist.genre_id));
+    
+    for (int i = 0; i < artist.n_albums; i++) {
+        db_save_album(artist.albums[i], fp);
+    }
+    
+    return true;
+}
 /**
  * NÍVEL 2
  * 
@@ -158,9 +194,22 @@ artist_id_t db_artist_add(const char artist_name[], int popularity, const char g
  * 
  * para cada nova faixa:   add ; track ; <album_name> ; <artist_name>  ; <duration>
  */
-bool db_save_all(const char filename[]) {
-    printf("'db_save_all' not implemented!\n");  
-    return false;
+bool db_save_all(const char filename[]) 
+{
+    FILE *fp;
+    fp = fopen(filename, "w");
+    if (fp == NULL) {
+        return false;
+    }
+
+    for (int art = 0; art < MAX_ARTISTS; art++) {
+        if (db_artist_valid_id(art)) {
+            db_save_artist(art, fp);
+        }
+    }
+
+    fclose(fp);
+    return true;
 }
 
 /**
